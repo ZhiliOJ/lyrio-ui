@@ -73,6 +73,7 @@ module.exports = {
     submit: "提出"
   },
   permission_level: {
+    limited: "limited",
     read: "read",
     write: "write"
   },

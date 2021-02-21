@@ -72,6 +72,7 @@ module.exports = {
     submit: "Submit"
   },
   permission_level: {
+	limited: "Limited",
     read: "Read Only",
     write: "Read/Write"
   },
