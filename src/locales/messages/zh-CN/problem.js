@@ -71,7 +71,7 @@ module.exports = {
     submit: "提交"
   },
   permission_level: {
-	limited: "受限",
+    limited: "受限",
     read: "只读",
     write: "读写"
   },
