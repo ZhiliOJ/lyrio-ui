@@ -551,7 +551,7 @@ let FileTable: React.FC<FileTableProps> = props => {
         </Table.Body>
         <Table.Footer fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan={isMobile ? 2 : 3}>
+            <Table.HeaderCell colSpan={(isMobile ? 2 : 3) - (props.forbidDownload ? 1 : 0)}>
               <div className={style.fileTableFooterInfo}>
                 <div className={style.tableFooterText}>
                   {selectedFilesArray.length > 0 ? (
