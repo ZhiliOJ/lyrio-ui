@@ -175,6 +175,7 @@ interface FileTableItem {
 
 interface FileTableRowProps {
   file: FileTableItem;
+  forbidDownload: boolean;
   hasPermission: boolean;
   selected: boolean;
   pending: boolean;
@@ -320,58 +321,64 @@ let FileTableRow: React.FC<FileTableRowProps> = props => {
           </EmojiRenderer>
         </Table.Cell>
         {!isMobile && <Table.Cell textAlign="center">{formatFileSize(props.file.size, 1)}</Table.Cell>}
-        <Table.Cell className={style.fileTableColumnOperations} textAlign="center">
-          {props.file.upload ? (
-            getUploadStatus()
-          ) : (
-            <>
-              <Icon className={style.fileTableOperationIcon} name="download" onClick={() => props.onDownload()} />
-              {props.hasPermission && (
-                <>
-                  <Popup
-                    trigger={
-                      <Icon disabled={props.pending} className={style.fileTableOperationIcon} name="pencil alternate" />
-                    }
-                    disabled={props.pending}
-                    open={renameOpen}
-                    onOpen={() => setRenameOpen(true)}
-                    onClose={() => !props.pending && setRenameOpen(false)}
-                    content={
-                      <Form>
-                        <Form.Input
-                          style={{ width: 230 }}
-                          placeholder={_(".new_filename")}
-                          value={newFilename}
-                          onChange={(e, { value }) => setNewFilename(value)}
-                          onKeyPress={onEnterPress(() => onRename())}
+        {!props.forbidDownload && (
+          <Table.Cell className={style.fileTableColumnOperations} textAlign="center">
+            {props.file.upload ? (
+              getUploadStatus()
+            ) : (
+              <>
+                <Icon className={style.fileTableOperationIcon} name="download" onClick={() => props.onDownload()} />
+                {props.hasPermission && (
+                  <>
+                    <Popup
+                      trigger={
+                        <Icon
+                          disabled={props.pending}
+                          className={style.fileTableOperationIcon}
+                          name="pencil alternate"
                         />
-                        <Button primary loading={props.pending} onClick={onRename}>
-                          {_(".rename")}
+                      }
+                      disabled={props.pending}
+                      open={renameOpen}
+                      onOpen={() => setRenameOpen(true)}
+                      onClose={() => !props.pending && setRenameOpen(false)}
+                      content={
+                        <Form>
+                          <Form.Input
+                            style={{ width: 230 }}
+                            placeholder={_(".new_filename")}
+                            value={newFilename}
+                            onChange={(e, { value }) => setNewFilename(value)}
+                            onKeyPress={onEnterPress(() => onRename())}
+                          />
+                          <Button primary loading={props.pending} onClick={onRename}>
+                            {_(".rename")}
+                          </Button>
+                        </Form>
+                      }
+                      on="click"
+                      position="top center"
+                    />
+                    <Popup
+                      trigger={<Icon disabled={props.pending} className={style.fileTableOperationIcon} name="delete" />}
+                      disabled={props.pending}
+                      open={deleteOpen}
+                      onOpen={() => setDeleteOpen(true)}
+                      onClose={() => !props.pending && setDeleteOpen(false)}
+                      content={
+                        <Button negative loading={props.pending} onClick={onDelete}>
+                          {_(".confirm_delete")}
                         </Button>
-                      </Form>
-                    }
-                    on="click"
-                    position="top center"
-                  />
-                  <Popup
-                    trigger={<Icon disabled={props.pending} className={style.fileTableOperationIcon} name="delete" />}
-                    disabled={props.pending}
-                    open={deleteOpen}
-                    onOpen={() => setDeleteOpen(true)}
-                    onClose={() => !props.pending && setDeleteOpen(false)}
-                    content={
-                      <Button negative loading={props.pending} onClick={onDelete}>
-                        {_(".confirm_delete")}
-                      </Button>
-                    }
-                    on="click"
-                    position="top center"
-                  />
-                </>
-              )}
-            </>
-          )}
-        </Table.Cell>
+                      }
+                      on="click"
+                      position="top center"
+                    />
+                  </>
+                )}
+              </>
+            )}
+          </Table.Cell>
+        )}
       </Table.Row>
     </>
   );
@@ -380,6 +387,7 @@ let FileTableRow: React.FC<FileTableRowProps> = props => {
 FileTableRow = observer(FileTableRow);
 
 interface FileTableProps {
+  forbidDownload: boolean;
   hasPermission: boolean;
   color: SemanticCOLORS;
   files: FileTableItem[];
@@ -510,9 +518,11 @@ let FileTable: React.FC<FileTableProps> = props => {
                 {_(".size")}
               </Table.HeaderCell>
             )}
-            <Table.HeaderCell textAlign="center" className={style.fileTableColumnOperations}>
-              {props.hasPermission ? _(".operations_and_status") : _(".operations")}
-            </Table.HeaderCell>
+            {!props.forbidDownload && (
+              <Table.HeaderCell textAlign="center" className={style.fileTableColumnOperations}>
+                {props.hasPermission ? _(".operations_and_status") : _(".operations")}
+              </Table.HeaderCell>
+            )}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -527,6 +537,7 @@ let FileTable: React.FC<FileTableProps> = props => {
               <FileTableRow
                 key={file.uuid}
                 file={file}
+                forbidDownload={props.forbidDownload}
                 hasPermission={props.hasPermission}
                 selected={selectedFiles.has(file.uuid)}
                 pending={pendingFiles.has(file.uuid)}
@@ -559,13 +570,15 @@ let FileTable: React.FC<FileTableProps> = props => {
                         })}
                       >
                         <Dropdown.Menu className={style.fileTableSelectedFilesDropdownMenu}>
-                          <Dropdown.Item
-                            icon="download"
-                            text={_(".download_as_archive")}
-                            onClick={() =>
-                              props.onDownloadFilesAsArchive(selectedFilesArray.map(file => file.filename))
-                            }
-                          />
+                          {!props.forbidDownload && (
+                            <Dropdown.Item
+                              icon="download"
+                              text={_(".download_as_archive")}
+                              onClick={() =>
+                                props.onDownloadFilesAsArchive(selectedFilesArray.map(file => file.filename))
+                              }
+                            />
+                          )}
                           {props.hasPermission && (
                             <Popup
                               trigger={<Dropdown.Item icon="delete" text={_(".delete")} />}
@@ -866,6 +879,7 @@ let ProblemFilesPage: React.FC<ProblemFilesPageProps> = props => {
         }
       />
       <FileTable
+        forbidDownload={!props.problem.permissionOfCurrentUser.includes("DownloadTestData")}
         hasPermission={props.problem.permissionOfCurrentUser.includes("Modify")}
         color="green"
         files={fileListTestData}
@@ -889,6 +903,7 @@ let ProblemFilesPage: React.FC<ProblemFilesPageProps> = props => {
         content={_(".header_additional_files")}
       />
       <FileTable
+        forbidDownload={false}
         hasPermission={props.problem.permissionOfCurrentUser.includes("Modify")}
         color="pink"
         files={fileListAdditionalFiles}

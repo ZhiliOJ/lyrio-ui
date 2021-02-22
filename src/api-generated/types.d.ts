@@ -353,7 +353,7 @@ declare namespace ApiTypes {
     testData?: ApiTypes.ProblemFileDto[];
     additionalFiles?: ApiTypes.ProblemFileDto[];
     discussionCount?: number;
-    permissionOfCurrentUser?: ("View" | "Modify" | "ManagePermission" | "ManagePublicness" | "Delete")[];
+    permissionOfCurrentUser?: ("View" | "DownloadTestData" | "Modify" | "ManagePermission" | "ManagePublicness" | "Delete")[];
     permissions?: ApiTypes.ProblemPermissionsDto;
     lastSubmission?: ApiTypes.ProblemLastSubmissionDto;
   }
