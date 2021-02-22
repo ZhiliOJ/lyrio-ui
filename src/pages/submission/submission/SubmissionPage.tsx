@@ -185,6 +185,7 @@ interface SubmissionPageProps {
   content: unknown;
   progress: SubmissionProgress;
   progressSubscriptionKey?: string;
+  permissionTestData: boolean;
   permissionRejudge: boolean;
   permissionCancel: boolean;
   permissionSetPublic: boolean;
@@ -376,7 +377,7 @@ let SubmissionPage: React.FC<SubmissionPageProps> = props => {
         expandable = false;
       } else {
         status = testcaseResult.status;
-        expandable = true;
+        expandable = isSample || props.permissionTestData;
       }
 
       return {
@@ -471,56 +472,57 @@ let SubmissionPage: React.FC<SubmissionPageProps> = props => {
             </Accordion.Title>
           );
         })(),
-        content: !testcaseResult ? null : (
-          <Accordion.Content className={style.accordionContent}>
-            {testcaseResult.input && (
-              <OmittableAnsiCodeBox
-                title={
-                  <>
-                    <strong>{_(".testcase.input")}</strong>
-                    {testcaseResult.testcaseInfo.inputFile && (
-                      <span
-                        className={"monospace " + style.fileNameWrapper}
-                        onClick={() => onDownload(testcaseResult.testcaseInfo.inputFile)}
-                      >
-                        <EmojiRenderer>
-                          <span className={style.fileName}>{testcaseResult.testcaseInfo.inputFile}</span>
-                        </EmojiRenderer>
-                        <Icon name="download" />
-                      </span>
-                    )}
-                  </>
-                }
-                ansiMessage={testcaseResult.input}
-              />
-            )}
-            {testcaseResult.output && (
-              <OmittableAnsiCodeBox
-                title={
-                  <>
-                    <strong>{_(".testcase.output")}</strong>
-                    {testcaseResult.testcaseInfo.outputFile && (
-                      <span
-                        className={"monospace " + style.fileNameWrapper}
-                        onClick={() => onDownload(testcaseResult.testcaseInfo.outputFile)}
-                      >
-                        <EmojiRenderer>
-                          <span className={style.fileName}>{testcaseResult.testcaseInfo.outputFile}</span>
-                        </EmojiRenderer>
-                        <Icon name="download" />
-                      </span>
-                    )}
-                  </>
-                }
-                ansiMessage={testcaseResult.output}
-              />
-            )}
-            <OmittableAnsiCodeBox title={_(".testcase.user_output")} ansiMessage={testcaseResult.userOutput} />
-            <OmittableAnsiCodeBox title={_(".testcase.user_error")} ansiMessage={testcaseResult.userError} />
-            {getAdditionalSections(testcaseResult)}
-            <OmittableAnsiCodeBox title={_(".testcase.system_message")} ansiMessage={testcaseResult.systemMessage} />
-          </Accordion.Content>
-        )
+        content:
+          !props.permissionTestData || !testcaseResult ? null : (
+            <Accordion.Content className={style.accordionContent}>
+              {testcaseResult.input && (
+                <OmittableAnsiCodeBox
+                  title={
+                    <>
+                      <strong>{_(".testcase.input")}</strong>
+                      {testcaseResult.testcaseInfo.inputFile && (
+                        <span
+                          className={"monospace " + style.fileNameWrapper}
+                          onClick={() => onDownload(testcaseResult.testcaseInfo.inputFile)}
+                        >
+                          <EmojiRenderer>
+                            <span className={style.fileName}>{testcaseResult.testcaseInfo.inputFile}</span>
+                          </EmojiRenderer>
+                          <Icon name="download" />
+                        </span>
+                      )}
+                    </>
+                  }
+                  ansiMessage={testcaseResult.input}
+                />
+              )}
+              {testcaseResult.output && (
+                <OmittableAnsiCodeBox
+                  title={
+                    <>
+                      <strong>{_(".testcase.output")}</strong>
+                      {testcaseResult.testcaseInfo.outputFile && (
+                        <span
+                          className={"monospace " + style.fileNameWrapper}
+                          onClick={() => onDownload(testcaseResult.testcaseInfo.outputFile)}
+                        >
+                          <EmojiRenderer>
+                            <span className={style.fileName}>{testcaseResult.testcaseInfo.outputFile}</span>
+                          </EmojiRenderer>
+                          <Icon name="download" />
+                        </span>
+                      )}
+                    </>
+                  }
+                  ansiMessage={testcaseResult.output}
+                />
+              )}
+              <OmittableAnsiCodeBox title={_(".testcase.user_output")} ansiMessage={testcaseResult.userOutput} />
+              <OmittableAnsiCodeBox title={_(".testcase.user_error")} ansiMessage={testcaseResult.userError} />
+              {getAdditionalSections(testcaseResult)}
+              <OmittableAnsiCodeBox title={_(".testcase.system_message")} ansiMessage={testcaseResult.systemMessage} />
+            </Accordion.Content>
+          )
       };
     });
 

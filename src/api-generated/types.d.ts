@@ -353,7 +353,14 @@ declare namespace ApiTypes {
     testData?: ApiTypes.ProblemFileDto[];
     additionalFiles?: ApiTypes.ProblemFileDto[];
     discussionCount?: number;
-    permissionOfCurrentUser?: ("View" | "DownloadTestData" | "Modify" | "ManagePermission" | "ManagePublicness" | "Delete")[];
+    permissionOfCurrentUser?: (
+      | "View"
+      | "DownloadTestData"
+      | "Modify"
+      | "ManagePermission"
+      | "ManagePublicness"
+      | "Delete"
+    )[];
     permissions?: ApiTypes.ProblemPermissionsDto;
     lastSubmission?: ApiTypes.ProblemLastSubmissionDto;
   }
@@ -392,6 +399,7 @@ declare namespace ApiTypes {
     content?: {};
     progress?: {};
     progressSubscriptionKey?: string;
+    permissionTestData?: boolean;
     permissionRejudge?: boolean;
     permissionCancel?: boolean;
     permissionSetPublic?: boolean;
