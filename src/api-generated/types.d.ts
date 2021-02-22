@@ -355,7 +355,7 @@ declare namespace ApiTypes {
     discussionCount?: number;
     permissionOfCurrentUser?: (
       | "View"
-      | "DownloadTestData"
+      | "TestData"
       | "Modify"
       | "ManagePermission"
       | "ManagePublicness"

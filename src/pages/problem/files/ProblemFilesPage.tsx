@@ -175,7 +175,7 @@ interface FileTableItem {
 
 interface FileTableRowProps {
   file: FileTableItem;
-  forbidDownload: boolean;
+  permissionDownload: boolean;
   hasPermission: boolean;
   selected: boolean;
   pending: boolean;
@@ -321,7 +321,7 @@ let FileTableRow: React.FC<FileTableRowProps> = props => {
           </EmojiRenderer>
         </Table.Cell>
         {!isMobile && <Table.Cell textAlign="center">{formatFileSize(props.file.size, 1)}</Table.Cell>}
-        {!props.forbidDownload && (
+        {props.permissionDownload && (
           <Table.Cell className={style.fileTableColumnOperations} textAlign="center">
             {props.file.upload ? (
               getUploadStatus()
@@ -387,7 +387,7 @@ let FileTableRow: React.FC<FileTableRowProps> = props => {
 FileTableRow = observer(FileTableRow);
 
 interface FileTableProps {
-  forbidDownload: boolean;
+  permissionDownload: boolean;
   hasPermission: boolean;
   color: SemanticCOLORS;
   files: FileTableItem[];
@@ -518,7 +518,7 @@ let FileTable: React.FC<FileTableProps> = props => {
                 {_(".size")}
               </Table.HeaderCell>
             )}
-            {!props.forbidDownload && (
+            {props.permissionDownload && (
               <Table.HeaderCell textAlign="center" className={style.fileTableColumnOperations}>
                 {props.hasPermission ? _(".operations_and_status") : _(".operations")}
               </Table.HeaderCell>
@@ -537,7 +537,7 @@ let FileTable: React.FC<FileTableProps> = props => {
               <FileTableRow
                 key={file.uuid}
                 file={file}
-                forbidDownload={props.forbidDownload}
+                permissionDownload={props.permissionDownload}
                 hasPermission={props.hasPermission}
                 selected={selectedFiles.has(file.uuid)}
                 pending={pendingFiles.has(file.uuid)}
@@ -551,7 +551,7 @@ let FileTable: React.FC<FileTableProps> = props => {
         </Table.Body>
         <Table.Footer fullWidth>
           <Table.Row>
-            <Table.HeaderCell colSpan={(isMobile ? 2 : 3) - (props.forbidDownload ? 1 : 0)}>
+            <Table.HeaderCell colSpan={(isMobile ? 2 : 3) - (props.permissionDownload ? 0 : 1)}>
               <div className={style.fileTableFooterInfo}>
                 <div className={style.tableFooterText}>
                   {selectedFilesArray.length > 0 ? (
@@ -570,7 +570,7 @@ let FileTable: React.FC<FileTableProps> = props => {
                         })}
                       >
                         <Dropdown.Menu className={style.fileTableSelectedFilesDropdownMenu}>
-                          {!props.forbidDownload && (
+                          {props.permissionDownload && (
                             <Dropdown.Item
                               icon="download"
                               text={_(".download_as_archive")}
@@ -879,7 +879,7 @@ let ProblemFilesPage: React.FC<ProblemFilesPageProps> = props => {
         }
       />
       <FileTable
-        forbidDownload={!props.problem.permissionOfCurrentUser.includes("DownloadTestData")}
+        permissionDownload={props.problem.permissionOfCurrentUser.includes("TestData")}
         hasPermission={props.problem.permissionOfCurrentUser.includes("Modify")}
         color="green"
         files={fileListTestData}
@@ -903,7 +903,7 @@ let ProblemFilesPage: React.FC<ProblemFilesPageProps> = props => {
         content={_(".header_additional_files")}
       />
       <FileTable
-        forbidDownload={false}
+        permissionDownload={true}
         hasPermission={props.problem.permissionOfCurrentUser.includes("Modify")}
         color="pink"
         files={fileListAdditionalFiles}
