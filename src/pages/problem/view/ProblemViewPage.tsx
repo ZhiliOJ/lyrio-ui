@@ -272,13 +272,13 @@ let ProblemViewPage: React.FC<ProblemViewPageProps> = props => {
     <PermissionManager
       objectDescription={_(".action.permission_manager_description", { idString })}
       permissionsLevelDetails={{
-        0: {
+        1: {
           title: _(".permission_level.limited")
         },
-        1: {
+        2: {
           title: _(".permission_level.read")
         },
-        2: {
+        3: {
           title: _(".permission_level.write")
         }
       }}
