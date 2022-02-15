@@ -1,4 +1,4 @@
-import { observable, computed } from "mobx";
+import { observable, computed, makeObservable } from "mobx";
 import { computedFn } from "mobx-utils";
 import { create, persist } from "mobx-persist";
 
@@ -20,6 +20,7 @@ export const browserDefaultLocale = getBrowserLocale();
 
 export class AppState {
   constructor() {
+    makeObservable(this);
     this.initializationThemeDetection();
   }
 
@@ -96,8 +97,10 @@ export class AppState {
   get appLogoThemed(): { src: string; style: React.CSSProperties } {
     const logoSelector = this.serverPreference.misc.appLogoForTheme[this.theme] || "original";
     const logoUrlSelector =
-      logoSelector === "original" || logoSelector === "inverted" ? this.serverPreference.misc.appLogo : logoSelector;
-    const logoUrl = logoUrlSelector === "default" ? `${window.publicPath}logo.svg` : logoUrlSelector;
+      logoSelector === "original" || logoSelector === "inverted"
+        ? window.appLogo || this.serverPreference.misc.appLogo
+        : logoSelector;
+    const logoUrl = logoUrlSelector === "default" ? null : logoUrlSelector;
     const logoInverted = logoSelector === "inverted";
     return logoUrl
       ? {

@@ -112,12 +112,7 @@ let AppLayout: React.FC = props => {
       <Button className={style.loginAndRegisterButton} onClick={() => onLoginOrRegisterClick("login")}>
         {_(".header.user.login")}
       </Button>
-      <Button
-        className={style.loginAndRegisterButton}
-        primary
-        onClick={() => onLoginOrRegisterClick("register")}
-        type="primary"
-      >
+      <Button className={style.loginAndRegisterButton} primary onClick={() => onLoginOrRegisterClick("register")}>
         {_(".header.user.register")}
       </Button>
     </>
@@ -185,7 +180,7 @@ let AppLayout: React.FC = props => {
       <Segment vertical className={className}>
         <Container textAlign="center">
           <EmojiRenderer>
-            <div>{appState.serverPreference.siteName} Powered by SYZOJ NG</div>
+            <div>{appState.serverPreference.siteName} Powered by Lyrio</div>
           </EmojiRenderer>
           <div id={style.footerVersion} className="monospace">
             <span>
@@ -217,7 +212,7 @@ let AppLayout: React.FC = props => {
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            <Link href="https://github.com/syzoj" title="GitHub" target="_blank" rel="noreferrer noopener">
+            <Link href="https://github.com/lyrio-dev" title="GitHub" target="_blank" rel="noreferrer noopener">
               <Icon name="github" />
             </Link>
           </div>
